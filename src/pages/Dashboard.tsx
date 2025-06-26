@@ -5,8 +5,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Gift, Calendar, Award } from 'lucide-react';
+import { Plus, Gift, Calendar, Award, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DarkModeToggle from '@/components/DarkModeToggle';
+import LanguageSelector from '@/components/LanguageSelector';
 
 interface Profile {
   id: string;
@@ -82,6 +84,11 @@ const Dashboard = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -100,12 +107,19 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Gift className="h-8 w-8 text-green-600 mr-3" />
+              <img src="/lovable-uploads/e10aac0e-a4f9-44c5-8074-af7e5a6d42e0.png" alt="Pick & Give" className="h-8 w-8 mr-3" />
               <h1 className="text-2xl font-bold text-green-800">Pick & Give</h1>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-600">
+                <span className="font-medium">Eco-Points: </span>
+                <span className="text-green-600 font-bold">{profile?.total_eco_points || 0}</span>
+              </div>
               <span className="text-sm text-gray-600">Welcome, {profile?.full_name}</span>
-              <Button variant="outline" onClick={signOut}>
+              <LanguageSelector />
+              <DarkModeToggle />
+              <Button variant="outline" onClick={handleSignOut} size="sm">
+                <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
             </div>

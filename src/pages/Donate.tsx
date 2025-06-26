@@ -1,33 +1,28 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Upload, Gift } from 'lucide-react';
+import { Gift, Upload, ArrowLeft } from 'lucide-react';
+
+type DonationCategory = 'clothes' | 'electronics' | 'books' | 'other';
 
 const Donate = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    item_name: '',
-    category: '',
-    description: '',
-  });
+  const [itemName, setItemName] = useState('');
+  const [category, setCategory] = useState<DonationCategory>('clothes');
+  const [description, setDescription] = useState('');
   const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -35,18 +30,17 @@ const Donate = () => {
     }
   };
 
-  const uploadImage = async (file: File): Promise<string | null> => {
+  const uploadImage = async (file: File) => {
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `donations/${fileName}`;
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `${user?.id}/${fileName}`;
 
     const { error } = await supabase.storage
       .from('donations')
       .upload(filePath, file);
 
     if (error) {
-      console.error('Error uploading image:', error);
-      return null;
+      throw error;
     }
 
     const { data } = supabase.storage
@@ -64,38 +58,37 @@ const Donate = () => {
 
     try {
       let imageUrl = null;
-
+      
       if (image) {
         imageUrl = await uploadImage(image);
-        if (!imageUrl) {
-          throw new Error('Failed to upload image');
-        }
       }
+
+      const donationData = {
+        user_id: user.id,
+        item_name: itemName,
+        category: category,
+        description: description,
+        image_url: imageUrl,
+      };
 
       const { error } = await supabase
         .from('donations')
-        .insert([
-          {
-            user_id: user.id,
-            item_name: formData.item_name,
-            category: formData.category,
-            description: formData.description,
-            image_url: imageUrl,
-          },
-        ]);
+        .insert([donationData]);
 
-      if (error) throw error;
+      if (error) {
+        throw error;
+      }
 
       toast({
         title: 'Donation submitted!',
-        description: 'Your donation has been submitted successfully.',
+        description: 'Your item has been successfully submitted for donation.',
       });
 
       navigate('/dashboard');
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to submit donation',
+        title: 'Error submitting donation',
+        description: error.message,
         variant: 'destructive',
       });
     } finally {
@@ -104,114 +97,100 @@ const Donate = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center h-16">
-            <Button variant="ghost" onClick={() => navigate('/dashboard')} className="mr-4">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
-            </Button>
-            <div className="flex items-center">
-              <Gift className="h-8 w-8 text-green-600 mr-3" />
-              <h1 className="text-2xl font-bold text-green-800">New Donation</h1>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
+      {/* Header */}
+      <div className="max-w-2xl mx-auto mb-6">
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/dashboard')}
+          className="mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Dashboard
+        </Button>
+      </div>
+
+      <Card className="max-w-2xl mx-auto">
+        <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <div className="p-3 bg-green-100 rounded-full">
+              <Gift className="h-8 w-8 text-green-600" />
             </div>
           </div>
-        </div>
-      </header>
+          <CardTitle className="text-2xl font-bold text-green-800">Donate an Item</CardTitle>
+          <CardDescription>
+            Help reduce waste by donating items you no longer need
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="item-name">Item Name *</Label>
+              <Input
+                id="item-name"
+                type="text"
+                value={itemName}
+                onChange={(e) => setItemName(e.target.value)}
+                placeholder="e.g., Blue Denim Jacket"
+                required
+              />
+            </div>
 
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Donate an Item</CardTitle>
-            <CardDescription>
-              Help the environment by donating items you no longer need
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="item_name">Item Name *</Label>
+            <div className="space-y-2">
+              <Label htmlFor="category">Category *</Label>
+              <Select value={category} onValueChange={(value: DonationCategory) => setCategory(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="clothes">Clothes</SelectItem>
+                  <SelectItem value="electronics">Electronics</SelectItem>
+                  <SelectItem value="books">Books</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe the condition and any relevant details..."
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="image">Item Photo</Label>
+              <div className="flex items-center space-x-2">
                 <Input
-                  id="item_name"
-                  value={formData.item_name}
-                  onChange={(e) => handleInputChange('item_name', e.target.value)}
-                  placeholder="e.g., Blue Cotton T-Shirt"
-                  required
+                  id="image"
+                  type="file"
+                  onChange={handleImageChange}
+                  accept="image/*"
+                  className="flex-1"
                 />
+                <Upload className="h-4 w-4 text-gray-400" />
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="category">Category *</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={(value) => handleInputChange('category', value)}
-                  required
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="clothes">Clothes</SelectItem>
-                    <SelectItem value="electronics">Electronics</SelectItem>
-                    <SelectItem value="books">Books</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  placeholder="Describe the condition and any additional details..."
-                  rows={4}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="image">Item Image</Label>
-                <div className="flex items-center space-x-4">
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="flex-1"
-                  />
-                  <Upload className="h-5 w-5 text-gray-400" />
-                </div>
-                <p className="text-sm text-gray-500">
-                  Upload a clear photo of your item (optional)
+              {image && (
+                <p className="text-sm text-green-600">
+                  Selected: {image.name}
                 </p>
-              </div>
+              )}
+            </div>
 
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-medium text-green-800 mb-2">Eco Points Rewards</h4>
-                <ul className="text-sm text-green-700 space-y-1">
-                  <li>• Electronics: 50 points</li>
-                  <li>• Clothes: 20 points</li>
-                  <li>• Books: 15 points</li>
-                  <li>• Other: 10 points</li>
-                </ul>
-                <p className="text-xs text-green-600 mt-2">
-                  Points are awarded after verification by our team
-                </p>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-green-600 hover:bg-green-700"
-                disabled={loading}
-              >
-                {loading ? 'Submitting...' : 'Submit Donation'}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+            <Button 
+              type="submit" 
+              className="w-full bg-green-600 hover:bg-green-700"
+              disabled={loading}
+            >
+              {loading ? 'Submitting...' : 'Submit Donation'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -3,10 +3,39 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, Gift, Calendar, Award, Users, Globe } from "lucide-react";
+import DarkModeToggle from "@/components/DarkModeToggle";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
+      {/* Header */}
+      <header className="flex justify-between items-center p-4">
+        <div className="flex items-center">
+          <img src="/lovable-uploads/e10aac0e-a4f9-44c5-8074-af7e5a6d42e0.png" alt="Pick & Give" className="h-8 w-8 mr-2" />
+          <span className="text-xl font-bold text-green-800">Pick & Give</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <LanguageSelector />
+          <DarkModeToggle />
+          {user ? (
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-600">Welcome, {user.user_metadata?.full_name || 'User'}</span>
+              <Button asChild size="sm" className="bg-green-600 hover:bg-green-700">
+                <Link to="/dashboard">Dashboard</Link>
+              </Button>
+            </div>
+          ) : (
+            <Button asChild size="sm" className="bg-green-600 hover:bg-green-700">
+              <Link to="/auth">Login</Link>
+            </Button>
+          )}
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section className="relative py-20 px-4 text-center">
         <div className="max-w-4xl mx-auto">
@@ -24,7 +53,9 @@ const Index = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-green-600 hover:bg-green-700">
-              <Link to="/auth">Get Started</Link>
+              <Link to={user ? "/dashboard" : "/auth"}>
+                {user ? "Go to Dashboard" : "Get Started"}
+              </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
               <Link to="#how-it-works">Learn More</Link>
@@ -124,7 +155,9 @@ const Index = () => {
             turning their unused items into positive impact.
           </p>
           <Button asChild size="lg" variant="secondary">
-            <Link to="/auth">Start Donating Today</Link>
+            <Link to={user ? "/donate" : "/auth"}>
+              {user ? "Start Donating" : "Start Donating Today"}
+            </Link>
           </Button>
         </div>
       </section>
