@@ -9,7 +9,190 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      admins: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          role: Database["public"]["Enums"]["admin_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          role: Database["public"]["Enums"]["admin_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          role?: Database["public"]["Enums"]["admin_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      donations: {
+        Row: {
+          category: Database["public"]["Enums"]["donation_category"]
+          created_at: string | null
+          description: string | null
+          eco_points: number | null
+          id: string
+          image_url: string | null
+          item_name: string
+          status: Database["public"]["Enums"]["donation_status"] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["donation_category"]
+          created_at?: string | null
+          description?: string | null
+          eco_points?: number | null
+          id?: string
+          image_url?: string | null
+          item_name: string
+          status?: Database["public"]["Enums"]["donation_status"] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["donation_category"]
+          created_at?: string | null
+          description?: string | null
+          eco_points?: number | null
+          id?: string
+          image_url?: string | null
+          item_name?: string
+          status?: Database["public"]["Enums"]["donation_status"] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pickup_schedule: {
+        Row: {
+          created_at: string | null
+          donation_id: string
+          id: string
+          pickup_address: string
+          scheduled_date: string
+          scheduled_time: Database["public"]["Enums"]["time_slot"]
+          status: Database["public"]["Enums"]["pickup_status"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          donation_id: string
+          id?: string
+          pickup_address: string
+          scheduled_date: string
+          scheduled_time: Database["public"]["Enums"]["time_slot"]
+          status?: Database["public"]["Enums"]["pickup_status"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          donation_id?: string
+          id?: string
+          pickup_address?: string
+          scheduled_date?: string
+          scheduled_time?: Database["public"]["Enums"]["time_slot"]
+          status?: Database["public"]["Enums"]["pickup_status"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pickup_schedule_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "donations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string
+          id: string
+          phone_number: string | null
+          total_eco_points: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          full_name: string
+          id: string
+          phone_number?: string | null
+          total_eco_points?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          phone_number?: string | null
+          total_eco_points?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      rewards: {
+        Row: {
+          coupon_code: string | null
+          donation_id: string | null
+          id: string
+          issued_at: string | null
+          points_earned: number
+          reward_type: Database["public"]["Enums"]["reward_type"]
+          user_id: string
+        }
+        Insert: {
+          coupon_code?: string | null
+          donation_id?: string | null
+          id?: string
+          issued_at?: string | null
+          points_earned: number
+          reward_type: Database["public"]["Enums"]["reward_type"]
+          user_id: string
+        }
+        Update: {
+          coupon_code?: string | null
+          donation_id?: string | null
+          id?: string
+          issued_at?: string | null
+          points_earned?: number
+          reward_type?: Database["public"]["Enums"]["reward_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rewards_donation_id_fkey"
+            columns: ["donation_id"]
+            isOneToOne: false
+            referencedRelation: "donations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rewards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +201,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      admin_role: "verifier" | "manager"
+      donation_category: "clothes" | "electronics" | "books" | "other"
+      donation_status: "submitted" | "scheduled" | "picked_up" | "verified"
+      pickup_status: "pending" | "assigned" | "completed"
+      reward_type: "coupon" | "badge"
+      time_slot: "morning" | "afternoon" | "evening"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +321,13 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      admin_role: ["verifier", "manager"],
+      donation_category: ["clothes", "electronics", "books", "other"],
+      donation_status: ["submitted", "scheduled", "picked_up", "verified"],
+      pickup_status: ["pending", "assigned", "completed"],
+      reward_type: ["coupon", "badge"],
+      time_slot: ["morning", "afternoon", "evening"],
+    },
   },
 } as const
