@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Leaf, ArrowLeft, Eye, EyeOff } from 'lucide-react';
-import DarkModeToggle from '@/components/DarkModeToggle';
 import LanguageSelector from '@/components/LanguageSelector';
 
 const Auth = () => {
@@ -162,14 +160,13 @@ const Auth = () => {
           </div>
           <div className="flex items-center space-x-2">
             <LanguageSelector />
-            <DarkModeToggle />
           </div>
         </div>
 
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md backdrop-blur-sm bg-white/90 shadow-2xl border border-white/20">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <div className="p-3 bg-green-100 rounded-full">
+              <div className="p-3 bg-green-100 rounded-full shadow-lg">
                 <Leaf className="h-8 w-8 text-green-600" />
               </div>
             </div>
@@ -220,14 +217,13 @@ const Auth = () => {
         </div>
         <div className="flex items-center space-x-2">
           <LanguageSelector />
-          <DarkModeToggle />
         </div>
       </div>
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md backdrop-blur-sm bg-white/90 shadow-2xl border border-white/20">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="p-3 bg-green-100 rounded-full">
+            <div className="p-3 bg-green-100 rounded-full shadow-lg">
               <Leaf className="h-8 w-8 text-green-600" />
             </div>
           </div>
