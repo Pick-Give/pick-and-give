@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,6 +16,7 @@ import EcoPointsChart from '@/components/dashboard/EcoPointsChart';
 import NotificationPanel from '@/components/dashboard/NotificationPanel';
 import ProfileCard from '@/components/dashboard/ProfileCard';
 import LeaderboardCard from '@/components/dashboard/LeaderboardCard';
+import SchedulePickupModal from '@/components/dashboard/SchedulePickupModal';
 
 interface Profile {
   id: string;
@@ -44,6 +44,7 @@ const Dashboard = () => {
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const [schedulePickupOpen, setSchedulePickupOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -157,6 +158,8 @@ const Dashboard = () => {
             fullName={profile?.full_name || ''} 
             email={user?.email}
             totalEcoPoints={profile?.total_eco_points || 0}
+            profile={profile}
+            onProfileUpdate={fetchProfile}
           />
         </div>
 
@@ -199,7 +202,10 @@ const Dashboard = () => {
               <Plus className="h-4 w-4 mr-2" />
               {t('dashboard.newDonation')}
             </Button>
-            <Button variant="outline" onClick={() => navigate('/schedule')}>
+            <Button 
+              variant="outline" 
+              onClick={() => setSchedulePickupOpen(true)}
+            >
               <Calendar className="h-4 w-4 mr-2" />
               {t('dashboard.schedulePickup')}
             </Button>
@@ -296,6 +302,11 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      <SchedulePickupModal
+        open={schedulePickupOpen}
+        onOpenChange={setSchedulePickupOpen}
+      />
     </div>
   );
 };

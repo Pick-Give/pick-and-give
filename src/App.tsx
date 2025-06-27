@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +9,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Donate from "./pages/Donate";
 import NotFound from "./pages/NotFound";
+import LearnMore from "./pages/LearnMore";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +62,7 @@ const App = () => (
                 <Index />
               </PublicRoute>
             } />
+            <Route path="/learn-more" element={<LearnMore />} />
             <Route path="/auth" element={
               <PublicRoute>
                 <Auth />

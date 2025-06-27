@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -77,7 +76,7 @@ const Index = () => {
             <GlassmorphicButton to={user ? "/dashboard" : "/auth"} variant="primary">
               {user ? "Go to Dashboard" : "Get Started"}
             </GlassmorphicButton>
-            <GlassmorphicButton to="#how-it-works" variant="secondary">
+            <GlassmorphicButton to="/learn-more" variant="secondary">
               Learn More
             </GlassmorphicButton>
           </div>
