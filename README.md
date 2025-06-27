@@ -1,7 +1,7 @@
 # Welcome to Pick-and-Give
 
 
-## 🌿 Pick & Give — A Donation Pickup and Rewards Engine
+##  Pick & Give — A Donation Pickup and Rewards Engine
 
 **Pick & Give** is a sustainability-focused full-stack web application that enables users to schedule pickups for their used goods (clothes, books, electronics) and receive **eco-points** as rewards. It simplifies the donation process, promotes reuse, and incentivizes responsible behavior.
 
@@ -10,9 +10,9 @@
 **URL**: https://pick-and-give.lovable.app
 
 
-## 🧩 Features
+##  Features
 
-### 👥 User Features
+###  User Features
 
   * User registration and login via Supabase Auth
   * Schedule donation pickups with category tagging and images
@@ -21,7 +21,7 @@
   * View eco-impact metrics and donation history
   * Toggle light/dark mode and switch between English / Hindi
 
-### 📦 Admin/Platform Features
+###  Admin/Platform Features
 
   * Admin dashboard for verifying donations and managing pickups
   * Eco-points issuance logic based on verified items
@@ -31,7 +31,7 @@
 
 -----
 
-## 🖥️ Tech Stack
+##  Tech Stack
 
 | Layer      | Tools / Services                      |
 |------------|----------------------------------------|
@@ -48,7 +48,7 @@
 
 -----
 
-## 📂 Project Structure
+##  Project Structure
 
 ```bash
 pick-and-give/
@@ -75,7 +75,7 @@ pick-and-give/
 └── package.json
 ```
 
-### 📈 Supabase Tables Overview
+###  Supabase Tables Overview
 
   * **users**: user metadata, auth UUIDs
   * **donations**: item info, category, status
@@ -85,7 +85,7 @@ pick-and-give/
   * **referrals**: user referral codes and bonuses
   * **notifications**: in-app notification logs
 
-### 🧠 Key Supabase Functions (RPCs)
+###  Key Supabase Functions (RPCs)
 
   * `get_user_dashboard_stats(user_id)`
   * `get_donation_timeline(donation_id)`
@@ -136,7 +136,7 @@ npm run dev
 
 -----
 
-## 🚀 Upcoming Features (Planned)
+##  Upcoming Features (Planned)
 
   *  3D visual UI using Spline
   *  Eco-points gamification leaderboard
@@ -147,7 +147,7 @@ npm run dev
 
 -----
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions\! Please follow these steps:
 
@@ -159,13 +159,13 @@ We welcome contributions\! Please follow these steps:
 
 -----
 
-## 📜 License
+##  License
 
 This project is licensed under the MIT License.
 
 -----
 
-## 👤 Authors & Maintainers
+##  Authors & Maintainers
 
   * **Project Lead**: Himanshu Warulkar
   * **UI/UX**: Designed using Miro, Lovable AI
@@ -174,11 +174,11 @@ This project is licensed under the MIT License.
 
 -----
 
-## 📞 Contact & Links
+##  Contact & Links
 
-  * [LinkedIn](https://www.google.com/search?q=https://www.linkedin.com/in/himanshu-warulkar/) (Replace with actual LinkedIn profile)
-  * [GitHub Issues](https://www.google.com/search?q=https://github.com/your-username/pick-and-give/issues) (Replace with actual GitHub issues link)
-  * [Live Demo](https://www.google.com/search?q=https://www.pickandgive.com) (Replace with actual live demo URL)
+  * [LinkedIn](https://www.linkedin.com/in/himanshu-warulkar/) 
+  * [GitHub Issues](https://github.com/Pick-Give/pick-and-give/issues)
+  * [Live Demo](https://pick-and-give.lovable.app)
 
 Follow these steps:
 
