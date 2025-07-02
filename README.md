@@ -7,7 +7,7 @@
 
 -----
 
-**URL**: https://pick-and-give.lovable.app
+**URL**: https://pick-and-give.netlify.app/
 
 
 ##  Features
